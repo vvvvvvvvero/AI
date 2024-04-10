@@ -1,5 +1,6 @@
 import math
 import random
+import utils
 
 from utils import two_opt, convert_to_time_string
 from a_star import execute_astar
@@ -20,6 +21,7 @@ def get_distances(graph, stops, start_time, opt):
     return distances, total
 
 
+@utils.time_taken_tabu_search
 def tabu_search(graph, start_stop, stops, time, opt):
     stops.append(start_stop)
     n_stops = len(stops)
@@ -31,7 +33,7 @@ def tabu_search(graph, start_stop, stops, time, opt):
     no_improve_counter = 0
     improve_limit = math.floor(2 * math.sqrt(max_iterations))
 
-    tabu_tenure = n_stops
+    tabu_limit = n_stops
 
     current_solution = stops
     random.shuffle(current_solution)
@@ -61,7 +63,7 @@ def tabu_search(graph, start_stop, stops, time, opt):
         if best_neighbor is not None:
             current_solution = best_neighbor[:]
             tabu_list.append(tabu_candidate)
-            if len(tabu_list) > tabu_tenure:
+            if len(tabu_list) > tabu_limit:
                 tabu_list.pop(0)
             if best_neighbor_cost < best_solution_cost:
                 best_solution = best_neighbor[:]

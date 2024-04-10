@@ -30,7 +30,7 @@ def the_busiest_stops(graph):
             writer.writerow(stop)
 
 
-def test_a_star_heuristics(graph, start_stop, end_stop, appearance_time):
+def check_a_star_heuristics(graph, start_stop, end_stop, appearance_time):
     heuristics = [manhattan_distance, haversine_distance, euclidean_distance, geo_distance]
     for heuristic in heuristics:
         try:
@@ -39,22 +39,25 @@ def test_a_star_heuristics(graph, start_stop, end_stop, appearance_time):
             pass
 
 
-def test_heuristics(n, graph):
+def check_heuristics(n, graph):
     df = pd.read_csv(THE_BUSIEST_STOPS)
     stations = df["Stop"].tolist()
     for _ in range(n):
         start_stop, end_stop = random.sample(stations, 2)
-        test_a_star_heuristics(graph, start_stop, end_stop, "10:00:00")
+        check_a_star_heuristics(graph, start_stop, end_stop, "10:00:00")
     print_a_star_results()
 
 
 if __name__ == '__main__':
     connection_graph = load_data()
 
-    start = "PL. GRUNWALDZKI"
-    end = "Tramwajowa"
-    time = "10:00:00"
-    # test_heuristics(100, connection_graph)
+    # start = "PL. GRUNWALDZKI"
+    # end = "Tramwajowa"
+    # time = "10:00:00"
+    start = "PORT LOTNICZY"
+    end = "Swojczyce"
+    time = "08:28:00"
+
     # dijkstra(connection_graph, start, end, time)
     # astar(connection_graph, start, end, time, "t")
     # astar(connection_graph, start, end, time, "p")
@@ -68,5 +71,4 @@ if __name__ == '__main__':
     #      "Wyszyńskiego", "Kominiarska", "Kwidzyńska", "Rdestowa", "Tramwajowa", "Volvo", "Śrubowa"]
     L = ["PL. GRUNWALDZKI", "ZOO", "Tramwajowa"]
 
-    # tabu_search(connection_graph, "Reja", L, time, "t")
     tabu_search(connection_graph, "Reja", L, time, "t")

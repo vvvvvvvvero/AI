@@ -21,10 +21,12 @@ def a_star_inner_time(graph, start, goal, time, heuristic_fn):
         visited.add(current)
         current_cost = cost_so_far[current]
 
+        # sprawdzamy sąsiadów przystanku
         for neighbor in (n for n in graph[current]["next_stop"] if
                          n.departure >= current_cost + time and n.name not in visited):
             new_cost = neighbor.arrival - time
 
+            # jesli przystanek nie był odwiedzony lub nowy koszt jest mniejszy
             if neighbor.name not in cost_so_far or new_cost < cost_so_far[neighbor.name]:
                 cost_so_far[neighbor.name] = new_cost
                 came_from[neighbor.name] = current, neighbor.line, neighbor.departure, neighbor.arrival, neighbor.name
@@ -38,7 +40,7 @@ def a_star_inner_time(graph, start, goal, time, heuristic_fn):
 @utils.time_taken_a_star
 def a_star_inner_line(graph, start, goal, time, heuristic_fn):
     goal_lines_dict = {x.line: True for x in
-                       graph[goal]["next_stop"]}  # ustawiamy true dla linii, które sąsiadują z przystankiem docelowym
+                       graph[goal]["next_stop"]}  # ustawiamy true dla linii polaczanych z przystankiem docelowym
     priority_queue = [(0, start)]
     visited = set()
     came_from = {start: None}
@@ -67,7 +69,7 @@ def a_star_inner_line(graph, start, goal, time, heuristic_fn):
 
             if neighbor.name not in cost_so_far or priority < cost_so_far[neighbor.name][2] or priority == \
                     cost_so_far[neighbor.name][2] and new_time < cost_so_far[neighbor.name][1]:
-                cost_so_far[neighbor.name] = new_cost, new_time, priority
+                cost_so_far[neighbor.name] = new_cost, new_time, priority # koszt przystanku, czas przyjazdu, priorytet
                 # print(cost_so_far)
                 came_from[neighbor.name] = current, neighbor.line, neighbor.departure, neighbor.arrival, neighbor.name
                 heapq.heappush(priority_queue, (priority, neighbor.name))
