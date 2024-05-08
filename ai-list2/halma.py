@@ -19,7 +19,7 @@ class Halma:
         moves = set(moves)
         return list(moves)
 
-    def generate_moves_for_position(self, x, y, visited=None, is_recursion_call=False):
+    def generate_moves_for_position(self, x, y, visited=None, is_recursion_call=False, is_jump=False):
         if visited is None:
             visited = set()
         visited.add((x, y))
@@ -32,12 +32,12 @@ class Halma:
             new_x, new_y = x + dx, y + dy
             jump_x, jump_y = new_x + dx, new_y + dy
             if 0 <= new_x < len(self.board) and 0 <= new_y < len(self.board) and (new_x, new_y) not in visited:
-                if self.board[new_x][new_y] == 0:  # Simple move
+                if self.board[new_x][new_y] == 0 and not is_jump:  # Simple move
                     moves.append(Move((x, y), (new_x, new_y)))
                 elif 0 <= jump_x < len(self.board) and 0 <= jump_y < len(self.board) and (jump_x, jump_y) not in visited:
                     if self.board[new_x][new_y] in [1, 2] and self.board[jump_x][jump_y] == 0:  # Jump
                         moves.append(Move((x, y), (jump_x, jump_y)))
-                        moves.extend(self.generate_moves_for_position(jump_x, jump_y, visited.copy(), True))
+                        moves.extend(self.generate_moves_for_position(jump_x, jump_y, visited.copy(), True, True))
         return moves
 
     def make_move(self, move):
@@ -81,8 +81,6 @@ class Move:
             next_x, next_y = current_x + dir_x, current_y + dir_y
             mid_x, mid_y = current_x + dir_x // 2, current_y + dir_y // 2
 
-            print(len(state.board))
-
             if 0 <= next_x < len(state.board) and 0 <= next_y < len(state.board) and (next_x, next_y) not in visited:
                 if state.board[next_x][next_y] == 0 and state.board[mid_x][mid_y] in [1, 2]:
                     if self._check_jumps(next_x, next_y, end_x, end_y, state, visited):
@@ -94,6 +92,11 @@ class Move:
 
     def __repr__(self):
         return self.__str__()
+
+
+def consolidate_moves(move_list, origin):
+    reset_moves = [Move(origin, move.end) for move in move_list]
+    return reset_moves
 
 
 if __name__ == '__main__':
@@ -110,5 +113,9 @@ if __name__ == '__main__':
 
     print(initial_board)
 
-    game = Halma(initial_board, 1)
-    print(game.generate_moves_for_position(0, 0))
+    game = Halma(initial_board, 2)
+    generated_moves = game.generate_moves_for_position(3, 2)
+    print(generated_moves)
+    print(consolidate_moves(generated_moves, generated_moves[0].start))
+
+
