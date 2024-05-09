@@ -11,11 +11,13 @@ class Halma:
 
     def generate_moves(self):
         moves = []
+        temp_moves = []
         for x in range(len(self.board)):
             for y in range(len(self.board)):
                 if self.board[x][y] == self.current_player:
-                    moves.extend(self.generate_moves_for_position(x, y))
-
+                    temp_moves = self.generate_moves_for_position(x, y)
+                    temp_moves = consolidate_moves(temp_moves, (x, y))
+                    moves.extend(temp_moves)
         moves = set(moves)
         return list(moves)
 
@@ -113,9 +115,6 @@ if __name__ == '__main__':
 
     print(initial_board)
 
-    game = Halma(initial_board, 2)
-    generated_moves = game.generate_moves_for_position(3, 2)
+    game = Halma(initial_board, 1)
+    generated_moves = game.generate_moves()
     print(generated_moves)
-    print(consolidate_moves(generated_moves, generated_moves[0].start))
-
-

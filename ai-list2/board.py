@@ -42,6 +42,6 @@ def check_the_winner(board):
 
 
 if __name__ == '__main__':
-    board = create_game_board()
-    print(board)
+    my_board = create_game_board()
+    print(my_board)
 
